@@ -1,0 +1,96 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "github>ericfitz/deps-bump-bot"
+  ],
+  "baseBranchPatterns": [
+    "$default",
+    "/^dev\\//"
+  ],
+  "platformAutomerge": false,
+  "pep723": {
+    "managerFilePatterns": [
+      "/^scripts/.+\\.py$/"
+    ]
+  },
+  "packageRules": [
+    {
+      "description": "go-sqlite3 v2 breaks audit prune tests; keep v1 (go.mod also excludes v2.0.3+incompatible)",
+      "matchPackageNames": [
+        "github.com/mattn/go-sqlite3"
+      ],
+      "allowedVersions": "<2"
+    },
+    {
+      "description": "Deprecated transitive dependency",
+      "matchPackageNames": [
+        "github.com/golang/protobuf"
+      ],
+      "enabled": false
+    },
+    {
+      "description": "The root module, which test/integration and wstest satisfy via a local replace",
+      "matchPackageNames": [
+        "github.com/ericfitz/tmi"
+      ],
+      "enabled": false
+    },
+    {
+      "description": "test/integration and wstest replace the root module (=> ../..), so re-tidy them whenever Go deps move; a stale test/integration go.sum silently skips ~66 tests",
+      "matchManagers": [
+        "gomod"
+      ],
+      "postUpgradeTasks": {
+        "commands": [
+          "go -C test/integration mod tidy",
+          "go -C wstest mod tidy"
+        ],
+        "fileFilters": [
+          "test/integration/go.mod",
+          "test/integration/go.sum",
+          "wstest/go.mod",
+          "wstest/go.sum"
+        ],
+        "executionMode": "branch"
+      }
+    },
+    {
+      "description": "Keep Dockerfile.server-oracle's bootstrap Go in the go toolchain group, patch-only like the toolchain line",
+      "matchManagers": [
+        "custom.regex"
+      ],
+      "matchDepNames": [
+        "go"
+      ],
+      "groupName": "go toolchain"
+    },
+    {
+      "matchManagers": [
+        "custom.regex"
+      ],
+      "matchDepNames": [
+        "go"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "major"
+      ],
+      "dependencyDashboardApproval": true,
+      "automerge": false
+    }
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Dockerfile.server-oracle bootstraps its own Go (ARG GO_VERSION) and must match go.mod's toolchain line",
+      "managerFilePatterns": [
+        "/^Dockerfile\\.server-oracle$/"
+      ],
+      "matchStrings": [
+        "ARG GO_VERSION=(?<currentValue>\\d+\\.\\d+\\.\\d+)"
+      ],
+      "depNameTemplate": "go",
+      "datasourceTemplate": "golang-version"
+    }
+  ]
+}

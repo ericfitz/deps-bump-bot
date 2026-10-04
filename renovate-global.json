@@ -1,0 +1,10 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-global-schema.json",
+  "platform": "github",
+  "autodiscover": true,
+  "autodiscoverFilter": ["ericfitz/*"],
+  "requireConfig": "required",
+  "onboarding": false,
+  "gitAuthor": "ericfitz-deps-bot[bot] <294906881+ericfitz-deps-bot[bot]@users.noreply.github.com>",
+  "allowedCommands": ["^go -C [A-Za-z0-9_./-]+ mod tidy$"]
+}
