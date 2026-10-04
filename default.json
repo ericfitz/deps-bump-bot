@@ -1,0 +1,152 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "ericfitz shared dependency-update preset. Adopt with: { \"extends\": [\"github>ericfitz/deps-bump-bot\"] }",
+  "extends": [
+    "config:recommended"
+  ],
+  "ignorePaths": [
+    "**/node_modules/**",
+    "**/bower_components/**",
+    "**/vendor/**",
+    "**/testdata/**",
+    "**/fixtures/**",
+    "**/__fixtures__/**"
+  ],
+  "timezone": "UTC",
+  "schedule": [
+    "before 6am on monday"
+  ],
+  "minimumReleaseAge": "3 days",
+  "minimumReleaseAgeBehaviour": "timestamp-optional",
+  "labels": [
+    "dependencies"
+  ],
+  "semanticCommits": "enabled",
+  "semanticCommitType": "chore",
+  "semanticCommitScope": "deps",
+  "dependencyDashboard": true,
+  "prHourlyLimit": 0,
+  "prConcurrentLimit": 0,
+  "postUpdateOptions": [
+    "gomodTidy"
+  ],
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "labels": [
+      "dependencies",
+      "security"
+    ]
+  },
+  "packageRules": [
+    {
+      "description": "One PR per ecosystem per base branch: Go modules",
+      "matchManagers": [
+        "gomod"
+      ],
+      "groupName": "go modules"
+    },
+    {
+      "description": "Go toolchain directive gets its own group (it decides which Go CI and builds use)",
+      "matchManagers": [
+        "gomod"
+      ],
+      "matchDepTypes": [
+        "toolchain"
+      ],
+      "groupName": "go toolchain"
+    },
+    {
+      "description": "One PR per ecosystem: Node (npm/pnpm/yarn)",
+      "matchManagers": [
+        "npm"
+      ],
+      "groupName": "node packages"
+    },
+    {
+      "description": "One PR per ecosystem: Python (pyproject / uv.lock / PEP 723 inline scripts)",
+      "matchManagers": [
+        "pep621",
+        "pep723",
+        "pip_requirements",
+        "pip-compile"
+      ],
+      "groupName": "python packages"
+    },
+    {
+      "description": "One PR per ecosystem: GitHub Actions",
+      "matchManagers": [
+        "github-actions"
+      ],
+      "groupName": "github actions"
+    },
+    {
+      "description": "One PR per ecosystem: Docker base images",
+      "matchManagers": [
+        "dockerfile",
+        "docker-compose"
+      ],
+      "groupName": "docker images"
+    },
+    {
+      "description": "One PR per ecosystem: Terraform providers, modules and required_version",
+      "matchManagers": [
+        "terraform",
+        "terraform-version",
+        "terragrunt",
+        "terragrunt-version"
+      ],
+      "groupName": "terraform"
+    },
+    {
+      "description": "One PR per ecosystem: Kubernetes manifests (kustomize, helm, raw manifests)",
+      "matchManagers": [
+        "kustomize",
+        "helmv3",
+        "helm-values",
+        "kubernetes"
+      ],
+      "groupName": "kubernetes manifests"
+    },
+    {
+      "description": "Patch, minor, pin and digest updates merge automatically once required checks pass",
+      "matchUpdateTypes": [
+        "patch",
+        "minor",
+        "pin",
+        "digest"
+      ],
+      "automerge": true
+    },
+    {
+      "description": "Majors need explicit approval on the Dependency Dashboard",
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "dependencyDashboardApproval": true,
+      "automerge": false
+    },
+    {
+      "description": "Go toolchain: only patch releases in the current minor line are automatic; a minor-line jump is a human decision",
+      "matchManagers": [
+        "gomod"
+      ],
+      "matchDepTypes": [
+        "toolchain"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "major"
+      ],
+      "dependencyDashboardApproval": true,
+      "automerge": false
+    },
+    {
+      "description": "Uniform chore(deps): titles (version-bump-bot reads the squash subject; overrides config:recommended's fix(deps) for npm dependencies)",
+      "matchPackageNames": [
+        "*"
+      ],
+      "semanticCommitType": "chore",
+      "semanticCommitScope": "deps"
+    }
+  ]
+}

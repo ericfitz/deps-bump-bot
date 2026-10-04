@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24   # renovate 44 requires node ^24.11
+      - name: Validate Renovate repo configs (preset + this repo)
+        run: npx --yes --package renovate@44.132.5 -- renovate-config-validator --strict --no-global default.json renovate.json
+      - name: Validate Renovate global (runner) config
+        run: npx --yes --package renovate@44.132.5 -- renovate-config-validator --strict renovate-global.json
+      - name: actionlint
+        run: |
+          set -euo pipefail
+          bash <(curl -fsSL https://raw.githubusercontent.com/rhysd/actionlint/914e7df21a07ef503a81201c76d2b11c789d3fca/scripts/download-actionlint.bash) 1.7.12
+          ./actionlint -color
