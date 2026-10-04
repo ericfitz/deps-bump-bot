@@ -24,16 +24,20 @@ See [ADR 0001](adr/0001-use-renovate-shared-preset.md) for why.
 
 | Permission | Access | Why |
 |---|---|---|
+| Checks | Read and write | Read CI results before auto-merge; write Renovate's own checks |
+| Commit statuses | Read and write | Same, for commit statuses |
 | Contents | Read and write | Push `renovate/*` branches |
+| Issues | Read and write | Dependency Dashboard and config-warning issues |
 | Pull requests | Read and write | Open, update and merge PRs |
-| Issues | Read and write | Dependency Dashboard issue |
 | Workflows | Read and write | Commits that edit `.github/workflows/*` (Actions updates) |
-| Checks | Read | Decide when auto-merge is safe |
-| Commit statuses | Read and write | Renovate's own status checks |
+| Administration | Read | Read branch protection and rulesets |
 | Dependabot alerts | Read | Vulnerability-fix PRs |
 | Metadata | Read | Required |
 
-- **Secrets on ericfitz/deps-bump-bot:** `DEPS_BOT_APP_ID` and `DEPS_BOT_APP_PRIVATE_KEY`.
+This is the list from Renovate's [GitHub App docs](https://docs.renovatebot.com/modules/platform/github/). Members (read) only applies to organizations; ericfitz is a user account.
+
+- **Set the secrets** with `scripts/set-deps-bot-secrets.sh`. It reads `~/.keys/DEPS_BOT_APP_ID` and the newest `~/.keys/ericfitz-deps-bot.*.private-key.pem`, and never prints either value.
+- **Secrets on ericfitz/deps-bump-bot:** `DEPS_BOT_APP_ID` and `DEPS_BOT_APP_PRIVATE_KEY`. Only the runner repo needs them; adopting repos don't.
 - **Install the App** on ericfitz/deps-bump-bot and on each adopting repo.
 - **Never** make it a ruleset bypass actor. Its changes always go through PRs.
 
