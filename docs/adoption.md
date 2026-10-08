@@ -13,7 +13,7 @@ See [ADR 0001](adr/0001-use-renovate-shared-preset.md) for why.
 - **Paths:** test modules are included (`config:recommended` would skip `**/test/**`). Only `node_modules`, `vendor`, `testdata` and `fixtures` directories are ignored.
 - **PR titles look like `chore(deps): update <group>`.** Repos are squash-only, so version-bump-bot reads the title as the commit subject and applies a patch bump.
 - **Patch, minor, pin and digest updates merge automatically** once required checks pass. Majors, and Go toolchain jumps to a new minor line, wait for approval on the Dependency Dashboard issue.
-- **Routine updates run Mondays before 06:00 UTC.** A release must also be at least 3 days old (`minimumReleaseAge`). Releases with no timestamp, which is common for Docker registries such as Oracle's or ECR Public, skip the 3-day wait instead of being blocked forever (`minimumReleaseAgeBehaviour: timestamp-optional`).
+- **Routine updates run on Mondays (UTC), all day.** The daily runner fires at 13:00 UTC and GitHub can delay scheduled runs by hours, so a narrower window would miss it. A release must also be at least 3 days old (`minimumReleaseAge`). Releases with no timestamp, which is common for Docker registries such as Oracle's or ECR Public, skip the 3-day wait instead of being blocked forever (`minimumReleaseAgeBehaviour: timestamp-optional`).
 - **Indirect Go dependencies are not updated** (Renovate's default).
 - **Dependabot alerts open fix PRs right away.** These skip both the schedule and the release-age wait.
 - **Go:** `go mod tidy` runs after updates. The `go` directive is never raised.
