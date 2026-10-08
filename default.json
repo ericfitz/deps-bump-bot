@@ -14,7 +14,7 @@
   ],
   "timezone": "UTC",
   "schedule": [
-    "before 6am on monday"
+    "* * * * 1"
   ],
   "minimumReleaseAge": "3 days",
   "minimumReleaseAgeBehaviour": "timestamp-optional",
